@@ -37,10 +37,13 @@ void basic_test(){
 
 int main(){
 
-    char *str = "abcdef123456hijklmn";
+    char *exp = "12+12";
 
-    printf("String: %s\n", str);
-    printf("Substring: %s\n", _get_substring(str, 12, 18));
+    printf("Expression: %s\n", exp);
+
+    Tree *t = create_expression_tree(exp);
+    printf("Result: %.2f\n", eval_tree(t));
+    //libera_arvore(t);
 
     return 0;
 }

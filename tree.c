@@ -191,29 +191,40 @@ Tree *create_expression_tree(char *expression){
 
     char *val = NULL;
     int start = 0 , finish = 0;
-    for(int exp_idx = 0; exp_idx <= expression_size; exp_idx++){
-        if(isdigit(*(expression + exp_idx))){
+
+    int exp_idx = 0;
+
+    while(exp_idx < expression_size){
+
+        if(isdigit(*(expression+exp_idx))){
             finish++;
+            exp_idx++;
         }
         else{
+            // insere digito
             char *number = _get_substring(expression, start, finish);
-
             float *converted_number = malloc(sizeof(float));
             *converted_number = atof(number);
-
+            printf("%.2f", *converted_number);
             // value node
             Node *value_node = cria_node('v', converted_number);
-    
-            // operation node
-            char operation  = expression[exp_idx];
-            Node *operation_node = cria_node('o', operation);
-
+            
             // inserindo na arvore
             insere_node_arvore(t, value_node);
 
+            char *operation = expression + exp_idx;
+
+            Node *operation_node = cria_node('o', operation);
+
+            // insere no de operacao
             insere_node_arvore(t, operation_node);
 
-            start=finish=exp_idx+1;
-        }
+            printf("%c\n", *operation);
+
+            start=finish=exp_idx++;
+        } 
+
     }
+
+    return t;
 }
