@@ -39,10 +39,10 @@ int main(){
 
     char *exp = "12+12";
 
-    printf("Expression: %s\n", exp);
-
     Tree *t = create_expression_tree(exp);
-    printf("Result: %.2f\n", eval_tree(t));
+    float result_eval = eval_tree(t);
+    //printf("\n");
+    //printf("Result: %.2f\n", result_eval);
     //libera_arvore(t);
 
     return 0;
