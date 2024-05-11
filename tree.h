@@ -14,6 +14,8 @@ typedef struct tree{
     Node *root;
 } Tree;
 
+void _imprime_arvore_pre_ordem(Node *node);
+
 Node * cria_node(char type, void *info);
 
 void libera_node(Node *node);

@@ -15,6 +15,23 @@ Node  *cria_node(char type, void *info){
     return node;
 }
 
+void _imprime_arvore_pre_ordem(Node *node){
+    if(node->lchild != NULL){
+        _imprime_arvore_pre_ordem(node->lchild);
+    }
+
+    if(node->type == 'o'){
+        printf(" %c ", *(char *) node->info);
+    }
+
+    if(node->type == 'v'){
+        printf(" %.2f ", *(float *) node->info);
+    }
+
+    if(node->rchild != NULL){
+        _imprime_arvore_pre_ordem(node->rchild);
+    }
+}
 
 void libera_node(Node *nd){ 
     free(nd);
@@ -53,7 +70,8 @@ Node * _insere_node_valor(Node *node_tree, Node *value_node){
     }
     else{
         // verifica sub árvore mais a direita
-        return _insere_node_valor(node_tree->rchild, value_node);
+        node_tree->rchild =  _insere_node_valor(node_tree->rchild, value_node);
+        return node_tree;
     }
 }
 
@@ -69,35 +87,37 @@ int _get_precedence_value(char operation){
 
 void _set_op_node_lchild(Node *node_tree, Node *op_node){
     op_node->parent = node_tree->parent;
-    op_node->lchild=node_tree;
     node_tree->parent = op_node;
+    op_node->lchild=node_tree;
 }
 
 Node * _insert_new_op_node(Node *node_tree, Node *op_node){
 
     if(node_tree->type == 'o'){
-        char node_tree_op  = *((char *) node_tree->info);
         char new_node_op = *((char *) op_node->info);
+        char node_tree_op  = *((char *) node_tree->info);
 
-        int prec_tree_op = _get_precedence_value(node_tree_op);
-        int prec_op_node = _get_precedence_value(new_node_op);
+        int prec_new_node_op = _get_precedence_value(new_node_op);
+        int prec_node_tree_op = _get_precedence_value(node_tree_op);
 
-        if(prec_tree_op <= prec_op_node){
+        if(prec_new_node_op > prec_node_tree_op ){
+            node_tree->rchild = _insert_new_op_node(node_tree->rchild, op_node);
+            return node_tree;
+        }
+        else{
             _set_op_node_lchild(node_tree, op_node);
             return op_node;
         }
-        else{ 
-            _insert_new_op_node(node_tree->rchild, op_node);
-        }
     }
-    
+
+
     _set_op_node_lchild(node_tree, op_node);
     return op_node;
 
 }
 
 void insere_node_arvore(Tree *t, Node *new_node){
-    if (t->root == NULL){ // árvore vazia
+    if (t->root == NULL){ // empty tree
         t->root = new_node;
     }
     else if(new_node->type == 'v'){
@@ -187,6 +207,7 @@ Tree *create_expression_tree(char *expression){
 
             Node *operation_node = cria_node('o', operation_char);
             insere_node_arvore(t, operation_node);
+
             exp_idx++;
             start = finish = exp_idx;
         }
