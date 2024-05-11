@@ -37,12 +37,12 @@ void basic_test(){
 
 int main(){
 
-    char *exp = "12+12";
+    char *exp = "12+12*3";
 
     Tree *t = create_expression_tree(exp);
     float result_eval = eval_tree(t);
-    //printf("\n");
-    //printf("Result: %.2f\n", result_eval);
+    printf("\n");
+    printf("Result: %.2f\n", result_eval);
     //libera_arvore(t);
 
     return 0;

@@ -134,40 +134,25 @@ float _apply_operation(char op_value, float a, float b){
     return result_op;
 }
 
-float _eval_op_node(Node *node){
+float _eval_nodes(Node *node){
     float a = 0;
     float b = 0;
     
-    if(node->lchild->type == 'v'){
-        a = _get_v_node(node->lchild);
-    }
-    else{
-        a = _eval_op_node(node->lchild);
-    }
-
-    if(node->rchild->type == 'v'){
-        b = _get_v_node(node->rchild);
-    }
-    else{ 
-        b = _eval_op_node(node->rchild);
-    }
+    if(node->type == 'v'){
+        return _get_v_node(node);
+    }   
 
     char operation = *((char *) node->info);
-    printf("%.2f", a);
-    printf("%c", operation);
-    printf("%.2f", b);
+
+    a = _eval_nodes(node->lchild);
+    b = _eval_nodes(node->rchild);
 
     return _apply_operation(operation, a, b);
 }
 
 
 float eval_tree(Tree *t){
-    if(t->root->type == 'v'){
-        return _get_v_node(t->root);
-    }
-    else{ // operation node
-        return _eval_op_node(t->root);
-    }
+    return _eval_nodes(t->root);
 }
 
 // lidando com strings
@@ -197,11 +182,10 @@ Tree *create_expression_tree(char *expression){
     while(exp_idx < expression_size){
 
         if(!isdigit(expression[exp_idx])){
-            char *operation = (expression + exp_idx);
+            char *operation_char = malloc(sizeof(char));
+            *operation_char = expression[exp_idx];
 
-            printf("%c", expression[exp_idx]);
-
-            Node *operation_node = cria_node('o', operation_node);
+            Node *operation_node = cria_node('o', operation_char);
             insere_node_arvore(t, operation_node);
             exp_idx++;
             start = finish = exp_idx;
@@ -213,8 +197,6 @@ Tree *create_expression_tree(char *expression){
         }
 
         char * number_string = _get_substring(expression, start, finish - 1);
-
-        printf("%s", number_string);
 
         float *value_c = malloc(sizeof(float));
 
